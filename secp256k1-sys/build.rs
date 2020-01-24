@@ -33,7 +33,9 @@ fn main() {
 
     // Actual build
     let mut base_config = cc::Build::new();
-    base_config.include("depend/secp256k1/")
+    base_config.pic(false) // no position independent code
+               .include("depend/secp256k1/")
+               .include("depend/config")
                .include("depend/secp256k1/include")
                .include("depend/secp256k1/src")
                .flag_if_supported("-Wno-unused-function") // some ecmult stuff is defined but not used upstream
@@ -45,10 +47,12 @@ fn main() {
                // TODO these three should be changed to use libgmp, at least until secp PR 290 is merged
                .define("USE_NUM_NONE", Some("1"))
                .define("USE_FIELD_INV_BUILTIN", Some("1"))
-               .define("USE_SCALAR_INV_BUILTIN", Some("1"));
-    
+               .define("USE_SCALAR_INV_BUILTIN", Some("1"))
+               .define("USE_ECMULT_STATIC_PRECOMPUTATION", Some("1"));
+
     if cfg!(feature = "lowmemory") {
-        base_config.define("ECMULT_WINDOW_SIZE", Some("4")); // A low-enough value to consume neglible memory
+        base_config.define("ECMULT_WINDOW_SIZE", Some("4")) // A low-enough value to consume neglible memory
+                   .define("ECMULT_GEN_PREC_BITS", Some("4")); 
     } else {
         base_config.define("ECMULT_WINDOW_SIZE", Some("15")); // This is the default in the configure file (`auto`)
     }
