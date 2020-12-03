@@ -54,3 +54,6 @@ name = "sign_verify"
 [[example]]
 name = "generate_keys"
 required-features = ["rand"]
+
+[[example]]
+name = "no_std"
