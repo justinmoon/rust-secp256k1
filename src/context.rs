@@ -5,8 +5,9 @@ use ffi::{self, CPtr};
 use ffi::types::{c_uint, c_void};
 use Error;
 use Secp256k1;
+use alloc::boxed::Box;
 
-#[cfg(feature = "std")]
+// #[cfg(feature = "std")]
 pub use self::std_only::*;
 
 #[cfg(feature = "global-context")]
@@ -86,7 +87,7 @@ mod private {
     impl<'buf> Sealed for SignOnlyPreallocated<'buf> {}
 }
 
-#[cfg(feature = "std")]
+// #[cfg(feature = "std")]
 mod std_only {
     impl private::Sealed for SignOnly {}
     impl private::Sealed for All {}
